@@ -8,6 +8,8 @@ import torch.nn.functional as F
 import pandas as pd 
 from collections import namedtuple
 
+GraphPath = namedtuple("GraphPath", ['s0', 'name', 's1'])
+
 class SSD(nn.Module):
     def __init__(self, num_classes : int, base_net: nn.ModuleList, 
                  source_layer_indexes: List[int], 
