@@ -15,14 +15,9 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import torchvision.models as models
 
-
-
 class MobileNet(nn.Module):
-    
     def __init__(self):
         super(MobileNet, self).__init__()
-
-
         # Define standard convolutional layer with batchnorm
         # as defined in paper
         # | 3 x 3 conv | --> | BN | --> |RELU| | 
@@ -42,8 +37,6 @@ class MobileNet(nn.Module):
                     nn.Conv2d(inp, inp, 3, stride, 1, groups=inp, bias=False), 
                     nn.BatchNorm2d(inp), 
                     nn.ReLU(inplace=True), 
-
-
                     nn.Conv2d(inp, oup, 1, 1, 0, bias=False), 
                     nn.BatchNorm(oup), 
                     nn.ReLU(inplace=True),
@@ -83,7 +76,6 @@ class InvertedResidual(nn.Module):
                 nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
                 nn.BatchNorm2d(oup),
             )
-
         else:
             self.conv = nn.Sequential(
                 nn.Conv2(inp, hidden_dim, 1, 1, 0, bias=False), 
@@ -100,7 +92,6 @@ class InvertedResidual(nn.Module):
             return x + self.conv(x)
         else:
             return self.conv(x)
-
 
 class MobileNetV2(nn.Module):
     def __init__(self, n_class=1, input_size = 224, width_mult=1., dropout_ratio=0.1,
@@ -139,12 +130,10 @@ class MobileNetV2(nn.Module):
             self.features.append(conv_1x1_bn(input_channel, self.last_channel, 
                 onnx_compatible=onnx_compatible))
             self.features = nn.Sequential(*self.features)
-
             self.classifier = nn.Sequential(
                 nn.Dropout(dropout_ratio), 
                 nn.Linear(self.last_channel, n_class), 
             )
-
             self._initialize_weights()
 
     def forward(self, x):
@@ -152,7 +141,6 @@ class MobileNetV2(nn.Module):
         x = x.mean(3).mean(2)
         x = self.classifier(x)
         return x
-
 
     def _initialize_weights(self):
         for m in self.modules():
